@@ -23,7 +23,20 @@ class TestTextNode(unittest.TestCase):
         node = TextNode("This is a text node", TextType.BOLD, "https://www.boot.dev")
         node2 = TextNode("This is a text node", TextType.BOLD, "https://www.bt.dev")
         self.assertNotEqual(node, node2)
+
+    
+    def test_text(self):
+        node = TextNode("This is a text node", TextType.TEXT)
+        html_node = node.text_node_to_html_node()
+        self.assertEqual(html_node.tag, None)
+        self.assertEqual(html_node.value, "This is a text node")    
  
+    def test_text_link(self):
+        node = TextNode("Click me!", TextType.LINK, "https://www.boot.dev")
+        html_node = node.text_node_to_html_node()
+        self.assertEqual(html_node.tag, "a")
+        self.assertEqual(html_node.value, 'Click me!')    
+        self.assertEqual(html_node.props, {"href": "https://www.boot.dev"})    
 
 if __name__ == "__main__":
     unittest.main()

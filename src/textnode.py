@@ -29,7 +29,7 @@ class TextNode():
             }
             self.text = None
         return LeafNode(self.text_type.value, self.text, prop)
-
+    
     def __eq__(self, other):
         if self.text != other.text:
             return False
@@ -41,3 +41,12 @@ class TextNode():
 
     def __repr__(self):
         return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
+
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    for node in old_nodes:
+        solution_list = []
+        text_list = node.text.rsplit(delimiter)
+        solution_list.append(TextNode(text_list[0], TextType.TEXT))
+        solution_list.append(TextNode(text_list[1], text_type))
+        solution_list.append(TextNode(text_list[2], TextType.TEXT))
+    return solution_list       

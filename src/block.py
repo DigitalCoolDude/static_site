@@ -33,13 +33,13 @@ def markdown_to_html_node(md):
             continue
         blocktype = block_to_block_type(block)
         if blocktype != BlockType.CODE:
-            textnodes = text_to_textnodes(block)
+            textnodes = text_to_textnodes(block.replace("\n", " "))
             grandchild_nodes = []
             for node in textnodes:
                 grandchild_nodes.append(node.text_node_to_html_node())
             child_nodes.append(ParentNode("p", grandchild_nodes))
         else:
-            child_nodes.append(ParentNode("pre", [TextNode(block, TextType.CODE).text_node_to_html_node()]))
+            child_nodes.append(ParentNode("pre", [TextNode(block.replace("```", ""), TextType.CODE).text_node_to_html_node()]))
 
                
     

@@ -1,10 +1,9 @@
-import os, shutil
-from textnode import TextNode, TextType
+import os, re, shutil
+from block import markdown_to_html_node
 
 def main():
-   # ex = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-   # print(ex)
    copy()
+   generate_pages_recursive("content", "template.html", "public")
 
 def copy():
    if os.path.exists("public"):
@@ -19,5 +18,44 @@ def copy():
          os.mkdir(p_item)
          for sub in os.listdir(s_item):
             dir_list.append((os.path.join(s_item, sub), os.path.join(p_item, sub)))
+
+def extract_title(md):
+   if md.read(1).strip() != "#":
+      raise
+   return md.readline().strip()
+
+def generate_page(from_path, template_path, dest_path):
+   print(f"Generation page from {from_path} to {dest_path} using {template_path}.")
+   
+   with open(from_path, "r") as content:
+      new_title = extract_title(content)
+      content.seek(0)
+      body = markdown_to_html_node(content.read()).to_html()
+   
+   with open(template_path, "r") as temp:
+      file_string = temp.read()
+      updated1 = re.sub(r'<title>.*?</title>', f'<title>{new_title}</title>', file_string)
+      updated2 = re.sub(r'<article>.*?</article>', f'<article>{body}</article>', updated1)
+
+   with open(dest_path, 'w') as new:
+      new.write(updated2)
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+   md_list = []
+
+   dir_list = [(dir_path_content, dest_dir_path)]
+   
+   for s_item, p_item in dir_list:
+      if os.path.isfile(s_item):
+         md_list.append((s_item, p_item.replace("md", "html")))
+      else:
+         if p_item != "public":
+            os.mkdir(p_item)
+         for sub in os.listdir(s_item):
+            dir_list.append((os.path.join(s_item, sub), os.path.join(p_item, sub)))
+
+   for (md, dest) in md_list:
+      generate_page(md, template_path, dest)
+
 
 main()

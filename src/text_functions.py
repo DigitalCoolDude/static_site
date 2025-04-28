@@ -25,7 +25,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     return solution_list
 
 def extract_markdown_link(text):
-    return re.findall(r"(?<!\!)\[([\w|\"|<]+(?:\s[\w|\"]+)*)\]\(((?:https:/){0,1}(?:/(?:\w*@*\w*)(?:\.\w*)*)*)\)", text)
+    return re.findall(r"(?<!\!)\[([\w|\"|<|\.]+(?:\s[\w|\"]+)*)\]\(((?:https:/){0,1}(?:/(?:[\w|\-]*@*\w*)(?:\.\w*)*)*)\)", text)
 
 def split_nodes_link(nodes):
     return split_nodes_url(nodes, TextType.LINK)

@@ -3,9 +3,10 @@ from enum import Enum
 from text_functions import text_to_textnodes
 from parentnode import ParentNode
 from textnode import TextNode, TextType
+from leafnode import LeafNode
 
 class BlockType(Enum):
-    HEADING = r"^(#{1,6})\s+(.+)$}"
+    HEADING = r"^#{1,6}\s+(.+)$"
     CODE = r"```(?:[\s\S]*?)```"
     QUOTE = r"(^|\n)>[^\n]*(\n>[^\n]*)*"
     UNORDERED_LIST = r"(^|\n)-\s+[^\n]*(\n-\s+[^\n]*)*"
@@ -32,14 +33,54 @@ def markdown_to_html_node(md):
         if block == '':
             continue
         blocktype = block_to_block_type(block)
-        if blocktype != BlockType.CODE:
-            textnodes = text_to_textnodes(block.replace("\n", " "))
-            grandchild_nodes = []
-            for node in textnodes:
-                grandchild_nodes.append(node.text_node_to_html_node())
-            child_nodes.append(ParentNode("p", grandchild_nodes))
-        else:
-            child_nodes.append(ParentNode("pre", [TextNode(block.replace("```", ""), TextType.CODE).text_node_to_html_node()]))
+        match blocktype:
+            case BlockType.HEADING:
+                child_nodes.append(
+                    ParentNode(f"h{block.find(" ")}", 
+                        [TextNode(block.replace("#", "").strip(), TextType.TEXT).text_node_to_html_node()])
+                )
+            case BlockType.CODE:
+                child_nodes.append(
+                    ParentNode("pre", 
+                        [TextNode(block.replace("```", ""), TextType.CODE).text_node_to_html_node()])
+                )
+            case BlockType.QUOTE:
+                textnodes = text_to_textnodes(block.replace(">", ""))
+                grandchild_nodes = []
+                for node in textnodes:
+                    grandchild_nodes.append(node.text_node_to_html_node())
+                child_nodes.append(ParentNode("blockquote", grandchild_nodes))
+            case BlockType.UNORDERED_LIST:
+                text_list = block.split("- ")
+                grandchild_nodes = []
+                for text in text_list:
+                    if text == "":
+                        continue
+                    textnodes = text_to_textnodes(text)                
+                    ggchild_nodes = []
+                    for node in textnodes:
+                        ggchild_nodes.append(node.text_node_to_html_node())
+                    grandchild_nodes.append(ParentNode("li", ggchild_nodes))
+                child_nodes.append(ParentNode("ul", grandchild_nodes))
+            case BlockType.ORDERED_LIST:
+                text_list = re.split(r'\d+\.\s', block)
+                grandchild_nodes = []
+                for text in text_list:
+                    if text == "":
+                        continue
+                    textnodes = text_to_textnodes(text)                
+                    ggchild_nodes = []
+                    for node in textnodes:
+                        ggchild_nodes.append(node.text_node_to_html_node())
+                    grandchild_nodes.append(ParentNode("li", ggchild_nodes))
+                child_nodes.append(ParentNode("ol", grandchild_nodes))             
+            case _:
+                textnodes = text_to_textnodes(block.replace("\n", " "))
+                grandchild_nodes = []
+                for node in textnodes:
+                    grandchild_nodes.append(node.text_node_to_html_node())
+                child_nodes.append(ParentNode("p", grandchild_nodes))
+        
 
                
     

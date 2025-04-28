@@ -36,7 +36,14 @@ class TestTextNode(unittest.TestCase):
         html_node = node.text_node_to_html_node()
         self.assertEqual(html_node.tag, "a")
         self.assertEqual(html_node.value, 'Click me!')    
-        self.assertEqual(html_node.props, {"href": "https://www.boot.dev"})    
+        self.assertEqual(html_node.props, {"href": "https://www.boot.dev"})
+
+    def test_text_image(self):
+        node = TextNode("Click me!", TextType.IMAGE, "https://www.boot.dev")
+        html_node = node.text_node_to_html_node()
+        self.assertEqual(html_node.tag, "img")
+        self.assertEqual(html_node.value, 'Click me!')    
+        self.assertEqual(html_node.props, {"alt": 'Click me!', "src": "https://www.boot.dev"})     
 
 if __name__ == "__main__":
     unittest.main()

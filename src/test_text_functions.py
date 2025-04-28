@@ -168,3 +168,11 @@ class TestText2TextNodesFunction(unittest.TestCase):
             TextNode("link", TextType.LINK, "https://boot.dev"),
         ]
         self.assertListEqual(node_list, solution_list)
+
+    def test_text_to_textnodes_only_images(self):
+        text = "![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg)"
+        node_list = text_to_textnodes(text)
+        solution_list = [
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg")
+        ]
+        self.assertListEqual(node_list, solution_list)

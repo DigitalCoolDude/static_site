@@ -22,12 +22,11 @@ class TextNode():
         if self.text_type == TextType.LINK:
             prop = {"href": self.url}
         if self.text_type == TextType.IMAGE:
-            prop_text = self.text
             prop = {
                 "src": self.url,
-                "alt": prop_text
+                "alt": self.text
             }
-            self.text = None
+            self.text = ""
         return LeafNode(self.text_type.value, self.text, prop)
     
     def __eq__(self, other):

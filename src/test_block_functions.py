@@ -40,6 +40,14 @@ class TestBlock2BlockTypeFunction(unittest.TestCase):
         blocktype = block_to_block_type("- This is a list\n- with items")
         self.assertEqual(blocktype, BlockType.UNORDERED_LIST)
 
+    def test_quote(self):
+        blocktype = block_to_block_type("> This is a list\n\n-- t.t.")
+        self.assertEqual(blocktype, BlockType.QUOTE)
+    
+    def test_heading(self):
+        blocktype = block_to_block_type("# This is a Heading")
+        self.assertEqual(blocktype, BlockType.HEADING)
+
 
 class TestMarkdown2HTMLNodeFunction(unittest.TestCase):
 
@@ -73,4 +81,18 @@ class TestMarkdown2HTMLNodeFunction(unittest.TestCase):
         self.assertEqual(
             html,
             "<div><pre><code>\nThis is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
+        )
+
+    def test_quote(self):
+        md = """
+    > "This is a quote."
+    >
+    > -- B.N.M
+    """
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            '<div><blockquote><p>"I am in fact a Hobbit in all but size."</p><p></p><p>-- J.R.R. Tolkien</p></blockquote></div>',
         )

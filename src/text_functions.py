@@ -25,13 +25,13 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     return solution_list
 
 def extract_markdown_link(text):
-    return re.findall(r"[^\!]\[(\w+(?:\s\w+)*)\]\((https:/(?:/(?:\w*@*\w*)(?:\.\w*)*)*)\)", text)
+    return re.findall(r"(?<!\!)\[([\w|\"|<]+(?:\s[\w|\"]+)*)\]\(((?:https:/){0,1}(?:/(?:\w*@*\w*)(?:\.\w*)*)*)\)", text)
 
 def split_nodes_link(nodes):
     return split_nodes_url(nodes, TextType.LINK)
 
 def extract_markdown_image(text):
-    return re.findall(r"\!\[(\w+(?:\s\w+)*)\]\((https:/(?:/(?:\w*@*\w*)(?:\.\w*)*)*)\)", text)
+    return re.findall(r"\!\[(\w+(?:\s\w+)*)\]\(((?:https:/){0,1}(?:/(?:\w*@*\w*)(?:\.\w*)*)*)\)", text)
 
 def split_nodes_image(nodes):
     return split_nodes_url(nodes,TextType.IMAGE)
@@ -67,4 +67,7 @@ def text_to_textnodes(text):
         nodes = split_nodes_delimiter(nodes, tup[0], tup[1])
     nodes = split_nodes_image(nodes)
     nodes = split_nodes_link(nodes)
+    for node in nodes:
+        if node == TextNode('', TextType.TEXT):
+            nodes.remove(TextNode('', TextType.TEXT))
     return nodes

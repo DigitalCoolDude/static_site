@@ -38,11 +38,9 @@ def generate_page(basepath, from_path, template_path, dest_path):
       file_string = temp.read()
       updated1 = re.sub(r'<title>.*?</title>', f'<title>{new_title}</title>', file_string)
       updated2 = re.sub(r'<article>.*?</article>', f'<article>{body}</article>', updated1)
-      updated3 = re.sub(r'href=\"/', f'href="{basepath[0]}/', updated2)
-      updated4 = re.sub(r'src=\"/', f'src="{basepath[0]}/', updated3)
 
    with open(dest_path, 'w') as new:
-      new.write(updated4)
+      new.write(updated2)
 
 def generate_pages_recursive(basepath, dir_path_content, template_path, dest_dir_path):
    md_list = []

@@ -1,15 +1,17 @@
-import os, re, shutil
+import os, re, shutil, sys
 from block import markdown_to_html_node
 
 def main():
-   copy()
-   generate_pages_recursive("content", "template.html", "public")
+   dest_dir_path = "docs"
+   copy(dest_dir_path)
+   basepath = sys.argv
+   generate_pages_recursive(basepath, "content", "template.html", dest_dir_path)
 
-def copy():
-   if os.path.exists("public"):
-      shutil.rmtree("public")
+def copy(dest_dir_path):
+   if os.path.exists(dest_dir_path):
+      shutil.rmtree(dest_dir_path)
 
-   dir_list = [("static", "public")]
+   dir_list = [("static", dest_dir_path)]
    
    for s_item, p_item in dir_list:
       if os.path.isfile(s_item):
@@ -24,7 +26,7 @@ def extract_title(md):
       raise
    return md.readline().strip()
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(basepath, from_path, template_path, dest_path):
    print(f"Generation page from {from_path} to {dest_path} using {template_path}.")
    
    with open(from_path, "r") as content:
@@ -36,11 +38,13 @@ def generate_page(from_path, template_path, dest_path):
       file_string = temp.read()
       updated1 = re.sub(r'<title>.*?</title>', f'<title>{new_title}</title>', file_string)
       updated2 = re.sub(r'<article>.*?</article>', f'<article>{body}</article>', updated1)
+      updated3 = re.sub(r'herf="/', f'href="{basepath}', updated2)
+      updated4 = re.sub(r'src="/', f'src="{basepath}', updated3)
 
    with open(dest_path, 'w') as new:
-      new.write(updated2)
+      new.write(updated4)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(basepath, dir_path_content, template_path, dest_dir_path):
    md_list = []
 
    dir_list = [(dir_path_content, dest_dir_path)]
@@ -49,13 +53,13 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
       if os.path.isfile(s_item):
          md_list.append((s_item, p_item.replace("md", "html")))
       else:
-         if p_item != "public":
+         if p_item != dest_dir_path:
             os.mkdir(p_item)
          for sub in os.listdir(s_item):
             dir_list.append((os.path.join(s_item, sub), os.path.join(p_item, sub)))
 
    for (md, dest) in md_list:
-      generate_page(md, template_path, dest)
+      generate_page(basepath, md, template_path, dest)
 
 
 main()

@@ -35,10 +35,11 @@ def markdown_to_html_node(md):
         blocktype = block_to_block_type(block)
         match blocktype:
             case BlockType.HEADING:
-                child_nodes.append(
-                    ParentNode(f"h{block.find(" ")}", 
-                        [TextNode(block.replace("#", "").strip(), TextType.TEXT).text_node_to_html_node()])
-                )
+                textnodes = text_to_textnodes(block.replace("#", "").strip())
+                grandchild_nodes = []
+                for node in textnodes:
+                    grandchild_nodes.append(node.text_node_to_html_node())
+                child_nodes.append(ParentNode(f"h{block.find(" ")}", grandchild_nodes))
             case BlockType.CODE:
                 child_nodes.append(
                     ParentNode("pre", 

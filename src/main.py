@@ -4,8 +4,7 @@ from block import markdown_to_html_node
 def main():
    dest_dir_path = "docs"
    copy(dest_dir_path)
-   basepath = sys.argv[0]
-   generate_pages_recursive("content", "template.html", dest_dir_path, basepath)
+   generate_pages_recursive("content", "template.html", dest_dir_path, basepath=sys.argv[1])
 
 def copy(dest_dir_path):
    if os.path.exists(dest_dir_path):

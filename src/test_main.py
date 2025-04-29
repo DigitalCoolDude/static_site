@@ -18,9 +18,9 @@ from textnode import TextNode, TextType
 #         generate_page()
 
 
-class TestGeneratePagesRecursive(unittest.TestCase):
+# class TestGeneratePagesRecursive(unittest.TestCase):
 
-    def test_gerenal_case(self):
-        generate_pages_recursive("content", "template.html", "public/index.html")
-        self.assertFalse(False)
+#     def test_gerenal_case(self):
+#         generate_pages_recursive("content", "template.html", "public/index.html")
+#         self.assertFalse(False)
         

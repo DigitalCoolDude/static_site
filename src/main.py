@@ -5,7 +5,7 @@ def main():
    dest_dir_path = "docs"
    copy(dest_dir_path)
    basepath = "/"
-   if sys.argv[1] in sys.argv:
+   if len(sys.argv) == 2:
       basepath = sys.argv[1]
    generate_pages_recursive(basepath, "content", "template.html", dest_dir_path)
 

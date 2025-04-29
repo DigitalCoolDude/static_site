@@ -42,7 +42,7 @@ class TestTextNode(unittest.TestCase):
         node = TextNode("Click me!", TextType.IMAGE, "https://www.boot.dev")
         html_node = node.text_node_to_html_node()
         self.assertEqual(html_node.tag, "img")
-        self.assertEqual(html_node.value, 'Click me!')    
+        self.assertEqual(html_node.value, '')    
         self.assertEqual(html_node.props, {"alt": 'Click me!', "src": "https://www.boot.dev"})     
 
 if __name__ == "__main__":

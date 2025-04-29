@@ -4,10 +4,8 @@ from block import markdown_to_html_node
 def main():
    dest_dir_path = "docs"
    copy(dest_dir_path)
-   basepath = "/"
-   if len(sys.argv) == 2:
-      basepath = sys.argv[1]
-   generate_pages_recursive(basepath, "content", "template.html", dest_dir_path)
+   basepath = sys.argv[0]
+   generate_pages_recursive("content", "template.html", dest_dir_path, basepath)
 
 def copy(dest_dir_path):
    if os.path.exists(dest_dir_path):
@@ -28,7 +26,7 @@ def extract_title(md):
       raise
    return md.readline().strip()
 
-def generate_page(basepath, from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
    print(f"Generation page from {from_path} to {dest_path} using {template_path}.")
    
    with open(from_path, "r") as content:
@@ -46,7 +44,7 @@ def generate_page(basepath, from_path, template_path, dest_path):
    with open(dest_path, 'w') as new:
       new.write(updated4)
 
-def generate_pages_recursive(basepath, dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath="/"):
    md_list = []
 
    dir_list = [(dir_path_content, dest_dir_path)]
@@ -61,7 +59,7 @@ def generate_pages_recursive(basepath, dir_path_content, template_path, dest_dir
             dir_list.append((os.path.join(s_item, sub), os.path.join(p_item, sub)))
 
    for (md, dest) in md_list:
-      generate_page(basepath, md, template_path, dest)
+      generate_page(md, template_path, dest, basepath)
 
 
 main()
